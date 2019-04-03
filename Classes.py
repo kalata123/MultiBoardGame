@@ -22,6 +22,3 @@ class Player():
             return 1
         else:
             return -1
-
-    def LOSE_HP(self, hp_to_lose = 1):
-        self.lives -= hp_to_lose
