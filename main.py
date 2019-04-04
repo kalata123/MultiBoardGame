@@ -6,9 +6,7 @@ from random import choice
 from Classes import Player
 from os import system
 
-
-
-def goforit():
+def setup():
     global total_players, player_names, comp_pos, led_count, pixels, i, colors, p1, p2, p3, p4, switch
     total_players = 0
     player_names = []
@@ -30,15 +28,6 @@ def goforit():
         else:
             player_names.append(pname)
 
-    colors = {
-        player_names[0] : (255,250,0),
-        player_names[1] : (0,0,255),
-        'Game' : (50,40,30),
-        'Black': (0,0,0),
-        'Wrong' : (50,255,255),
-        'Goto' : (0,255,255),
-        'Start' : (200,200,200)
-        }
 
     p1 = Player(player_names[0], 3, 100, 0)
     p2 = Player(player_names[1], 3, 100, 1)
@@ -46,6 +35,17 @@ def goforit():
     0:p1,
     1:p2
     }
+
+    colors = {
+    switch[0].name : (255,250,0),
+    switch[1].name : (0,0,255),
+    'Game' : (50,40,30),
+    'Black': (0,0,0),
+    'Wrong' : (50,255,255),
+    'Goto' : (0,255,255),
+    'Start' : (200,200,200)
+    }
+
     if total_players >= 3:
         p3 = Player(player_names[2], 3, 600, 2)
         colors[player_names[2]] = (0,255,0)
@@ -172,22 +172,14 @@ def CONDITION(player,all=False):
                 return -1
         return 0 #all players are poor
 
-
 def FATTEMPTS(player):
-    global total_players
-    switch = {
-        0:p1.failed_attempts,
-        1:p2.failed_attempts,
-    }
-    if total_players >= 3:
-        switch[2] = p3.failed_attempts
-    if total_players > 3:
-        switch[3] = p4.failed_attempts
-    return switch[player]
+    global switch
+    return switch[player].failed_attempts
 
 def BUY(player, pos, money_to_pay = 100):
     # gives <pos> over to <player> and
     # changes <player>'s curr_position
+    # DO NOT try to improve with switch dictionary - already tried
     if player == 0:
         return p1.ADD_POSITION(pos, money_to_pay)
     elif player == 1:
@@ -199,16 +191,6 @@ def BUY(player, pos, money_to_pay = 100):
 
 def LAST_POS(player):
     global switch
-    # switch = {
-    #     0:p1.curr_position,
-    #     1:p2.curr_position
-    # }
-    #
-    # global total_players
-    # if total_players >= 3:
-    #     switch[2]=p3.curr_position
-    # if total_players > 3:
-    #     switch[3]=p4.curr_position
     return switch[player].curr_position
 
 def GO_BACK(player):
@@ -226,20 +208,19 @@ def PLAYER_COLOR(player):
 
 def CURR_STATE():
     # Should be optimized when there are 2 players to show only their parameters
-    global total_players
+    global total_players, switch
     print('''This is the current state:\n\
     {:10} - on {:3} with {}$ and {} lives\n\
     {:10} - on {:3} with {}$ and {} lives\n\
     '''.format(\
-        player_names[0], jacks_repr[p1.curr_position], p1.money, p1.lives,\
-        player_names[1], jacks_repr[p2.curr_position], p2.money, p2.lives))
+        switch[0].name, jacks_repr[switch[0].curr_position], switch[0].money, switch[0].lives,\
+        switch[1].name, jacks_repr[switch[1].curr_position], switch[1].money, switch[1].lives))
     if total_players >= 3:
-        print("{:10} - on {:3} with {}$ and {} lives".format(player_names[2],\
-        jacks_repr[p3.curr_position], p3.money, p3.lives))
+        print("{:10} - on {:3} with {}$ and {} lives".format(switch[2].name,\
+        jacks_repr[switch[2].curr_position], switch[2].money, switch[2].lives))
     if total_players > 3:
-        print("{:10} - on {:3} with {}$ and {} lives".format(player_names[3],\
-        jacks_repr[p4.curr_position], p4.money, p4.lives))
-
+        print("{:10} - on {:3} with {}$ and {} lives".format(switch[3].name,\
+        jacks_repr[switch[3].curr_position], switch[3].money, switch[3].lives))
 
 def START():
     print("goes in start()")
@@ -409,7 +390,7 @@ def MAIN():
                 ASK(enemy, i)
 
 if __name__ == "__main__":
-    goforit()
+    setup()
     LED_START()
     print("Press the Middle Button to start the game")
     Button(2).wait_for_press()
