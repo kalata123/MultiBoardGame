@@ -318,9 +318,17 @@ def DICE_2(player):
     rand = choice([1, 2, 3, 4, 5, 6])
     while move_to in neigh_in_use:
         try:
-            move_to = jacks_pins[jacks_pins.index(LAST_POS(player)) + rand]
+            with jacks_pins[jacks_pins.index(LAST_POS(player)) + rand] as move_to:
+                if Button(move_to).is_pressed:
+                    return DICE_2(player)
+                else:
+                    return move_to
         except IndexError as e:
-            move_to = jacks_pins[jacks_pins.index(LAST_POS(player)) + rand - len(jacks_pins)]
+            with jacks_pins[jacks_pins.index(LAST_POS(player)) + rand - len(jacks_pins)] as move_to:
+                if Button(move_to).is_pressed:
+                    return DICE_2(player)
+                else:
+                    return move_to
 
     return move_to
 
