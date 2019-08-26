@@ -17,12 +17,16 @@ class Player():
         self.lives, self.money, self.owned_pos)
 
     def ADD_POSITION(self, new_pos, money_to_pay):
-        if self.money >= money_to_pay:
-            self.money = self.money - money_to_pay
+        if self.name != 'The game':
+            if self.money >= money_to_pay:
+                self.money = self.money - money_to_pay
+                self.owned_pos.append(new_pos)
+                self.curr_position = new_pos
+                return 1
+            else:
+                self.condition = False
+                self.failed_attempts += 1
+                return -1
+        else:
             self.owned_pos.append(new_pos)
             self.curr_position = new_pos
-            return 1
-        else:
-            self.condition = False
-            self.failed_attempts += 1
-            return -1
